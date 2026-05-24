@@ -312,14 +312,22 @@ Return ONLY a valid JSON array, no markdown:
 
 Use local names and locations relevant to ${form.location}. Be specific and realistic.`;
 
-      const res  = await fetch("/api/leads",{
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ messages:[{role:"user",content:prompt}] })
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "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",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1200,
+          messages: [{role:"user",content:prompt}]
+        })
       });
-      const rawText = await res.text();
-      if(!rawText || rawText.trim()==="") throw new Error("Empty response from server");
-      const data = JSON.parse(rawText);
-      if(data.error) throw new Error(data.error);
+      const data = await res.json();
+      if(data.error) throw new Error(JSON.stringify(data.error));
       const text = data.content?.map(b=>b.text||"").join("")||"";
       const parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
       setLeads(parsed);
