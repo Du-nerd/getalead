@@ -316,7 +316,7 @@ Use local names and locations relevant to ${form.location}. Be specific and real
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "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",
+          "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
           "anthropic-version": "2023-06-01",
           "anthropic-dangerous-direct-browser-access": "true"
         },
