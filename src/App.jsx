@@ -312,7 +312,7 @@ Return ONLY a valid JSON array, no markdown:
 
 Use local names and locations relevant to ${form.location}. Be specific and realistic.`;
 
-      const res  = await fetch("https://api.anthropic.com/v1/messages",{
+      const res  = await fetch("/api/leads",{
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:1200,
           messages:[{role:"user",content:prompt}] })
@@ -323,7 +323,10 @@ Use local names and locations relevant to ${form.location}. Be specific and real
       setLeads(parsed);
       saveLeads(currentUser.email, parsed);
       loadUserHistory(currentUser.email);
-    } catch(e){ setMessage("AI hit an issue. Try again."); }
+    } catch(e){ 
+      console.error("API Error:", e);
+      setMessage("Error: " + (e.message || "AI hit an issue. Try again.")); 
+    }
     setLoading(false);
   };
 
