@@ -7,10 +7,10 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end();
   
-  const apiKey = process.env.VITE_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_KEY;
   
   if (!apiKey) {
-    return res.status(500).json({ error: "API key not configured" });
+    return res.status(500).json({ error: "No API key found" });
   }
 
   try {
@@ -31,6 +31,6 @@ export default async function handler(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.status(r.status).send(text);
   } catch(e) {
-    res.status(500).json({ error: e.message || String(e) });
+    res.status(500).json({ error: String(e.message || e) });
   }
 }
