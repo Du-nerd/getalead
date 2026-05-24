@@ -1,3 +1,5 @@
+export const config = { api: { bodyParser: { sizeLimit: '4mb' } } };
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -12,10 +14,15 @@ export default async function handler(req, res) {
         "anthropic-version": "2023-06-01",
         "content-type": "application/json"
       },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1200,
+        messages: req.body.messages
+      })
     });
-    const data = await r.json();
-    res.status(200).json(data);
+    const text = await r.text();
+    res.setHeader("Content-Type", "application/json");
+    res.status(r.status).send(text);
   } catch(e) {
     res.status(500).json({ error: e.message });
   }
