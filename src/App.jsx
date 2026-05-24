@@ -314,10 +314,12 @@ Use local names and locations relevant to ${form.location}. Be specific and real
 
       const res  = await fetch("/api/leads",{
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:1200,
-          messages:[{role:"user",content:prompt}] })
+        body: JSON.stringify({ messages:[{role:"user",content:prompt}] })
       });
-      const data = await res.json();
+      const rawText = await res.text();
+      if(!rawText || rawText.trim()==="") throw new Error("Empty response from server");
+      const data = JSON.parse(rawText);
+      if(data.error) throw new Error(data.error);
       const text = data.content?.map(b=>b.text||"").join("")||"";
       const parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
       setLeads(parsed);
