@@ -327,7 +327,9 @@ Use local names and locations relevant to ${form.location}. Be specific and real
       loadUserHistory(currentUser.email);
     } catch(e){ 
       console.error("API Error:", e);
-      setMessage("Error: " + (e.message || "AI hit an issue. Try again.")); 
+      let errMsg = "AI hit an issue. Try again.";
+      try { errMsg = typeof e === "string" ? e : (e.message ? String(e.message) : JSON.stringify(e)); } catch(_){}
+      setMessage("Error: " + errMsg); 
     }
     setLoading(false);
   };
