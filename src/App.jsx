@@ -639,7 +639,12 @@ Use local names and locations relevant to ${form.location}. Be specific and real
                       <div className="lead-platform">📍{lead.location} · {lead.platform}{lead.recency ? <span style={{marginLeft:8,background:"#00c85318",color:"var(--green)",borderRadius:10,padding:"1px 7px",fontSize:9,fontWeight:600,letterSpacing:"0.5px",border:"1px solid var(--gm)"}}>🕐 {lead.recency}</span> : null}</div>
                       <div className="lead-insight">{lead.insight}</div>
                       <div className="lead-actions">
-                        <button className="btn-wa" onClick={()=>{setContacted({...contacted,[i]:true});window.open(`https://wa.me/${lead.phone?.replace(/\D/g,"")}?text=Hello! I'm from ${form.businessName}. I think we can help you.`,'_blank')}}>
+                        <button className="btn-wa" onClick={()=>{setContacted({...contacted,[i]:true});(() => {
+                          let ph = (lead.phone||"").replace(/\D/g,"");
+                          if(ph.startsWith("0")) ph = "256" + ph.slice(1);
+                          if(!ph.startsWith("256") && ph.length < 11) ph = "256" + ph;
+                          window.open(`https://wa.me/${ph}?text=Hello! I saw you might need our services. I'm from ${form.businessName} and I'd love to help you.`,'_blank');
+                        })()}}>
                           {contacted[i]?"✓ Sent":"WhatsApp"}
                         </button>
                         <button className="btn-done" onClick={()=>setContacted({...contacted,[i]:true})}>Mark Done</button>
